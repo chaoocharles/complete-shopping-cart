@@ -3,7 +3,7 @@ import { useHistory } from "react-router";
 import { addToCart } from "../slices/cartSlice";
 
 const Home = () => {
-  const products = useSelector((state) => state.products.items);
+  const { items: products, status } = useSelector((state) => state.products);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -14,23 +14,31 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      <h2>New Arrivals</h2>
-      <div className="products">
-        {products &&
-          products.map((product) => (
-            <div key={product.id} className="product">
-              <h3>{product.name}</h3>
-              <img src={product.image} alt={product.name} />
-              <div className="details">
-                <span>{product.desc}</span>
-                <span className="price">${product.price}</span>
-              </div>
-              <button onClick={() => handleAddToCart(product)}>
-                Add To Cart
-              </button>
-            </div>
-          ))}
-      </div>
+      {status === "success" ? (
+        <>
+          <h2>New Arrivals</h2>
+          <div className="products">
+            {products &&
+              products?.map((product) => (
+                <div key={product.id} className="product">
+                  <h3>{product.name}</h3>
+                  <img src={product.image} alt={product.name} />
+                  <div className="details">
+                    <span>{product.desc}</span>
+                    <span className="price">${product.price}</span>
+                  </div>
+                  <button onClick={() => handleAddToCart(product)}>
+                    Add To Cart
+                  </button>
+                </div>
+              ))}
+          </div>
+        </>
+      ) : status === "pending" ? (
+        <p>Loading...</p>
+      ) : (
+        <p>Unexpected error occured...</p>
+      )}
     </div>
   );
 };
