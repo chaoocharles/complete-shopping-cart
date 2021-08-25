@@ -1,11 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { addToCart } from "../slices/cartSlice";
+import { useGetAllProductsQuery } from "../slices/productsApi";
 
 const Home = () => {
   const { items: products, status } = useSelector((state) => state.products);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const { data, error, isLoading } = useGetAllProductsQuery();
+  console.log("Api", isLoading);
 
   const handleAddToCart = (product) => {
     dispatch(addToCart(product));
@@ -18,8 +22,8 @@ const Home = () => {
         <>
           <h2>New Arrivals</h2>
           <div className="products">
-            {products &&
-              products?.map((product) => (
+            {data &&
+              data?.map((product) => (
                 <div key={product.id} className="product">
                   <h3>{product.name}</h3>
                   <img src={product.image} alt={product.name} />
